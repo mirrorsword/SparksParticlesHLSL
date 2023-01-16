@@ -1,0 +1,229 @@
+<?xml version="1.0"?>
+<project version="2">
+	<pipeline>
+		<pass name="Compute" type="compute" active="true">
+			<shader type="cs" path="shaders\ParticleSystemExperiment_ComputeCS.hlsl" entry="main" />
+			<groupsize x="4096" y="1" z="1" />
+			<variables>
+				<variable type="float" name="deltaTime" system="TimeDelta" />
+				<variable type="int" name="frame" system="FrameIndex" />
+				<variable type="float" name="time" system="Time" />
+				<variable type="float3" name="RotationSpeeds">
+					<row>
+						<value>8</value>
+						<value>7.11999989</value>
+						<value>4.34639978</value>
+					</row>
+				</variable>
+				<variable type="float" name="SpawnVariance">
+					<row>
+						<value>1.70000005</value>
+					</row>
+				</variable>
+				<variable type="float" name="Lifespan">
+					<row>
+						<value>2</value>
+					</row>
+				</variable>
+				<variable type="int" name="ParticleCount">
+					<row>
+						<value>4096</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+		<pass name="Ground" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders\GroundVS.hlsl" entry="main" />
+			<shader type="ps" path="shaders\GroundPS.hlsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Opaque" type="renderstate">
+					<blend>true</blend>
+					<alpha2coverage>false</alpha2coverage>
+					<colorsrcfactor>Source Alpha</colorsrcfactor>
+					<colordstfactor>Inverse Source Alpha</colordstfactor>
+					<colorfunc>Add</colorfunc>
+					<alphasrcfactor>Source Alpha</alphasrcfactor>
+					<alphadstfactor>Inverse Source Alpha</alphadstfactor>
+					<alphafunc>Add</alphafunc>
+					<blendfactor_r>1</blendfactor_r>
+					<blendfactor_g>1</blendfactor_g>
+					<blendfactor_b>1</blendfactor_b>
+					<blendfactor_a>1</blendfactor_a>
+					<depthtest>true</depthtest>
+					<depthclamp>true</depthclamp>
+					<depthmask>true</depthmask>
+					<depthfunc>Less</depthfunc>
+					<depthbias>0</depthbias>
+					<stenciltest>false</stenciltest>
+					<stencilmask>0</stencilmask>
+					<stencilref>255</stencilref>
+					<stencilfrontfunc>Equal</stencilfrontfunc>
+					<stencilbackfunc>Equal</stencilbackfunc>
+					<stencilfrontpass>Keep</stencilfrontpass>
+					<stencilbackpass>Keep</stencilbackpass>
+					<stencilfrontfail>Keep</stencilfrontfail>
+					<stencilbackfail>Keep</stencilbackfail>
+					<depthfrontfail>Keep</depthfrontfail>
+					<depthbackfail>Keep</depthbackfail>
+				</item>
+				<item name="GroundPlane" type="geometry">
+					<type>Plane</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<scaleX>100</scaleX>
+					<scaleY>100</scaleY>
+					<pitch>1.57079637</pitch>
+					<y>-10</y>
+					<topology>TriangleList</topology>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="matVP" system="ViewProjection" />
+				<variable type="float4x4" name="matGeo" system="GeometryTransform" />
+			</variables>
+			<macros />
+		</pass>
+		<pass name="Particles" type="shader" active="true" patchverts="1">
+			<shader type="vs" path="shaders\ParticleSystemExperiment_ParticlesVS.hlsl" entry="main" />
+			<shader type="ps" path="shaders\ParticleSystemExperiment_ParticlesPS.hlsl" entry="main" />
+			<inputlayout>
+				<item value="Position" semantic="POSITION" />
+				<item value="Normal" semantic="NORMAL" />
+				<item value="Texcoord" semantic="TEXCOORD0" />
+			</inputlayout>
+			<rendertexture />
+			<items>
+				<item name="Transparent" type="renderstate">
+					<blend>true</blend>
+					<alpha2coverage>false</alpha2coverage>
+					<colorsrcfactor>Source Alpha</colorsrcfactor>
+					<colordstfactor>Inverse Source Alpha</colordstfactor>
+					<colorfunc>Add</colorfunc>
+					<alphasrcfactor>Source Alpha</alphasrcfactor>
+					<alphadstfactor>Inverse Source Alpha</alphadstfactor>
+					<alphafunc>Add</alphafunc>
+					<blendfactor_r>1</blendfactor_r>
+					<blendfactor_g>1</blendfactor_g>
+					<blendfactor_b>1</blendfactor_b>
+					<blendfactor_a>1</blendfactor_a>
+					<depthtest>true</depthtest>
+					<depthclamp>true</depthclamp>
+					<depthmask>false</depthmask>
+					<depthfunc>Less</depthfunc>
+					<depthbias>0</depthbias>
+					<stenciltest>false</stenciltest>
+					<stencilmask>0</stencilmask>
+					<stencilref>255</stencilref>
+					<stencilfrontfunc>Equal</stencilfrontfunc>
+					<stencilbackfunc>Equal</stencilbackfunc>
+					<stencilfrontpass>Keep</stencilfrontpass>
+					<stencilbackpass>Keep</stencilbackpass>
+					<stencilfrontfail>Keep</stencilfrontfail>
+					<stencilbackfail>Keep</stencilbackfail>
+					<depthfrontfail>Keep</depthfrontfail>
+					<depthbackfail>Keep</depthbackfail>
+				</item>
+				<item name="Sprites" type="geometry">
+					<type>Plane</type>
+					<width>1</width>
+					<height>1</height>
+					<depth>1</depth>
+					<x>1</x>
+					<instanced>true</instanced>
+					<instancecount>4096</instancecount>
+					<instancebuffer>InputData</instancebuffer>
+					<topology>TriangleList</topology>
+				</item>
+				<item name="clear render state" type="renderstate">
+					<blend>false</blend>
+					<alpha2coverage>false</alpha2coverage>
+					<colorsrcfactor>Source Alpha</colorsrcfactor>
+					<colordstfactor>Inverse Source Alpha</colordstfactor>
+					<colorfunc>Add</colorfunc>
+					<alphasrcfactor>Source Alpha</alphasrcfactor>
+					<alphadstfactor>Inverse Source Alpha</alphadstfactor>
+					<alphafunc>Add</alphafunc>
+					<blendfactor_r>1</blendfactor_r>
+					<blendfactor_g>1</blendfactor_g>
+					<blendfactor_b>1</blendfactor_b>
+					<blendfactor_a>1</blendfactor_a>
+					<depthtest>true</depthtest>
+					<depthclamp>true</depthclamp>
+					<depthmask>true</depthmask>
+					<depthfunc>Less</depthfunc>
+					<depthbias>0</depthbias>
+					<stenciltest>false</stenciltest>
+					<stencilmask>0</stencilmask>
+					<stencilref>255</stencilref>
+					<stencilfrontfunc>Equal</stencilfrontfunc>
+					<stencilbackfunc>Equal</stencilbackfunc>
+					<stencilfrontpass>Keep</stencilfrontpass>
+					<stencilbackpass>Keep</stencilbackpass>
+					<stencilfrontfail>Keep</stencilfrontfail>
+					<stencilbackfail>Keep</stencilbackfail>
+					<depthfrontfail>Keep</depthfrontfail>
+					<depthbackfail>Keep</depthbackfail>
+				</item>
+			</items>
+			<itemvalues />
+			<variables>
+				<variable type="float4x4" name="matVP" system="ViewProjection" />
+				<variable type="float4x4" name="matGeo" system="GeometryTransform" />
+				<variable type="float3" name="CameraPosition" system="CameraPosition3" />
+				<variable type="float3" name="ColorCurveGamma">
+					<row>
+						<value>0.449999988</value>
+						<value>1.20000005</value>
+						<value>3</value>
+					</row>
+				</variable>
+				<variable type="float3" name="ColorTint">
+					<row>
+						<value>1</value>
+						<value>0.800000012</value>
+						<value>0.800000012</value>
+					</row>
+				</variable>
+				<variable type="float" name="Brightness">
+					<row>
+						<value>7</value>
+					</row>
+				</variable>
+			</variables>
+			<macros />
+		</pass>
+	</pipeline>
+	<objects>
+		<object type="buffer" name="InputData" size="131072" format="vec3;float;vec3;int;" pausedpreview="false">
+			<bind slot="0" name="Compute" />
+		</object>
+	</objects>
+	<cameras />
+	<settings>
+		<entry type="pinned" name="ColorCurveGamma" owner="Particles" />
+		<entry type="pinned" name="ColorTint" owner="Particles" />
+		<entry type="pinned" name="Brightness" owner="Particles" />
+		<entry type="pinned" name="RotationSpeeds" owner="Compute" />
+		<entry type="pinned" name="SpawnVariance" owner="Compute" />
+		<entry type="pinned" name="Lifespan" owner="Compute" />
+		<entry type="pinned" name="ParticleCount" owner="Compute" />
+		<entry type="camera" fp="false">
+			<distance>50</distance>
+			<pitch>4</pitch>
+			<yaw>181</yaw>
+			<roll>360</roll>
+		</entry>
+		<entry type="clearcolor" r="0" g="0" b="0" a="0" />
+		<entry type="usealpha" val="false" />
+	</settings>
+	<plugindata />
+</project>
